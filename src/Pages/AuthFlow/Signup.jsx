@@ -10,12 +10,18 @@ import {
   Paper,
   Link,
   Snackbar,
+  InputAdornment,
+  IconButton,
 } from "@material-ui/core";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { isEmailAlreadyRegistered, signUp } from "../../redux/actions/authActions";
+import {
+  isEmailAlreadyRegistered,
+  signUp,
+} from "../../redux/actions/authActions";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const validationSchema = yup.object({
   username: yup.string().required("Username is required"),
@@ -61,16 +67,27 @@ const useStyles = makeStyles((theme) => ({
   button: {
     marginTop: theme.spacing(2),
     width: "100%",
-    minHeight: "100%", 
+    minHeight: "100%",
     position: "relative",
   },
   loader: {
     position: "relative",
-    margin: "auto", 
-    color: "white"
+    margin: "auto",
+    color: "white",
   },
   link: {
     marginTop: theme.spacing(2),
+  },
+  iconButton: {
+    "&:hover": {
+      backgroundColor: "transparent", // Remove hover background color
+    },
+    "&:focus": {
+      outline: "none",
+    },
+    "&:active": {
+      backgroundColor: "transparent", // Remove click background color
+    },
   },
 }));
 
@@ -79,7 +96,8 @@ const Signup = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [openSnackbar, setOpenSnackbar] = useState(false);
-const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const isLoading = useSelector((state) => state.auth.isLoading);
   const formik = useFormik({
     initialValues: {
@@ -90,7 +108,9 @@ const [snackbarMessage, setSnackbarMessage] = useState("");
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
-        dispatch(signUp(values.username, values.email, values.password, navigate));
+        dispatch(
+          signUp(values.username, values.email, values.password, navigate)
+        );
         formik.resetForm();
         setSnackbarMessage("Signed up successfully!");
         setOpenSnackbar(true);
@@ -142,10 +162,21 @@ const [snackbarMessage, setSnackbarMessage] = useState("");
           <Input
             id="password-input"
             name="password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             value={formik.values.password}
             onChange={formik.handleChange}
             error={formik.touched.password && Boolean(formik.errors.password)}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  className={classes.iconButton}
+                  aria-label="toggle password visibility"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              </InputAdornment>
+            }
           />
           {formik.touched.password && formik.errors.password && (
             <Typography variant="body2" color="error">
@@ -174,8 +205,8 @@ const [snackbarMessage, setSnackbarMessage] = useState("");
       </Typography>
       <Snackbar
         anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
+          vertical: "bottom",
+          horizontal: "left",
         }}
         open={openSnackbar}
         autoHideDuration={6000}

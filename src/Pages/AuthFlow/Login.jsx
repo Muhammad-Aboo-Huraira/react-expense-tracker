@@ -10,12 +10,18 @@ import {
   Link,
   CircularProgress,
   Snackbar,
+  InputAdornment,
+  IconButton,
 } from "@material-ui/core";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { isEmailAlreadyRegistered, signIn } from "../../redux/actions/authActions";
+import {
+  isEmailAlreadyRegistered,
+  signIn,
+} from "../../redux/actions/authActions";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const validationSchema = yup.object({
   email: yup
@@ -35,9 +41,7 @@ const validationSchema = yup.object({
         }
       }
     ),
-  password: yup
-    .string()
-  .required("Password is required"),
+  password: yup.string().required("Password is required"),
 });
 
 const useStyles = makeStyles((theme) => ({
@@ -70,6 +74,17 @@ const useStyles = makeStyles((theme) => ({
   link: {
     marginTop: theme.spacing(2),
   },
+  iconButton: {
+    "&:hover": {
+      backgroundColor: "transparent", // Remove hover background color
+    },
+    "&:focus": {
+      outline: "none",
+    },
+    "&:active": {
+      backgroundColor: "transparent", // Remove click background color
+    },
+  },
 }));
 
 const Login = () => {
@@ -78,7 +93,7 @@ const Login = () => {
   const navigate = useNavigate();
   const isLoading = useSelector((state) => state.auth.isLoading);
   const loginError = useSelector((state) => state.auth.error);
-
+  const [showPassword, setShowPassword] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
@@ -104,7 +119,6 @@ const Login = () => {
       }
     },
   });
-  
 
   return (
     <Paper className={classes.root}>
@@ -133,10 +147,21 @@ const Login = () => {
           <Input
             id="password-input"
             name="password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             value={formik.values.password}
             onChange={formik.handleChange}
             error={formik.touched.password && Boolean(formik.errors.password)}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  className={classes.iconButton}
+                  aria-label="toggle password visibility"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              </InputAdornment>
+            }
           />
           {formik.touched.password && formik.errors.password && (
             <Typography variant="body2" color="error">
