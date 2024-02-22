@@ -33,6 +33,15 @@ export const signUp = (username, email, password, navigate) => {
       }).catch((error) => {
         console.error("Error adding document: ", error);
       });
+
+      addDoc(collection(db, "accounts"), {
+        user_id: user.uid,
+        cash: 0,
+        savings: 0,
+      }).catch((error) => {
+        console.error("Error adding document: ", error);
+      });
+
       dispatch(signUpSuccess(user));
       navigate("/")
     } catch (error) {
@@ -67,7 +76,9 @@ export const signIn = (email, password, navigate) => {
         if (error.code === "auth/network-request-failed") {
             console.log(error.code)
             dispatch(signInError("Incorrect email or password."));
-        }
+        } else {
+          console.error("Login error:", error);
+      }
     }
   };
 };

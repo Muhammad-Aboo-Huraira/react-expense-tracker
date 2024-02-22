@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FormControl,
   InputLabel,
@@ -22,6 +22,7 @@ import {
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { persistor } from "../../redux/store";
 
 const validationSchema = yup.object({
   email: yup
@@ -97,6 +98,18 @@ const Login = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
+  useEffect(() => {
+    if (loginError === "Incorrect email or password.") {
+      setSnackbarMessage("Incorrect email or password.");
+      setOpenSnackbar(true);
+      persistor.purge();
+      localStorage.clear();
+    } else if (loginError) {
+      setSnackbarMessage("An error occurred. Please try again.");
+      setOpenSnackbar(true);
+    }
+  }, [loginError]);
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -107,13 +120,6 @@ const Login = () => {
       try {
         dispatch(signIn(values.email, values.password, navigate));
         formik.resetForm();
-        if (loginError === "Incorrect email or password.") {
-          setSnackbarMessage("Incorrect email or password.");
-          setOpenSnackbar(true);
-        } else {
-          setSnackbarMessage("Logged in successfully!");
-          setOpenSnackbar(true);
-        }
       } catch (error) {
         console.error("Login error:", error);
       }
@@ -199,7 +205,7 @@ const Login = () => {
           vertical: "bottom",
           horizontal: "left",
         }}
-        open={openSnackbar}
+      open={loginError !== "" && openSnackbar}
         autoHideDuration={6000}
         onClose={() => setOpenSnackbar(false)}
         message={snackbarMessage}

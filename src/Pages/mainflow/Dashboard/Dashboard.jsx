@@ -13,8 +13,7 @@ const Dashboard = () => {
   };
   return (
     <div>
-      
-      <button onClick={handleLogout}>Logout</button>
+      Hello from dashboard
     </div>
   )
 }
