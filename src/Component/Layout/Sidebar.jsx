@@ -49,7 +49,7 @@ const AppBar = styled(MuiAppBar, {
 })(({ theme, open }) => ({
   transition: theme.transitions.create(['margin', 'width'], {
     easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
+duration: theme.transitions.duration.leavingScreen,
   }),
   ...(open && {
     width: `calc(100% - ${drawerWidth}px)`,
@@ -98,7 +98,7 @@ export default function Sidebar({ logout, data }) {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      <AppBar position="fixed" open={open} style={{backgroundColor: '#1976d2' ,color: 'white'}}>
         <Toolbar>
           <IconButton
             color="inherit"

@@ -1,5 +1,5 @@
 export const getStorageItem = async (key) => {
-    console.log("getStorage", key);
+    // console.log("getStorage", key);
     try {
       let item = await localStorage.getItem(key);
       return item ? JSON.parse(item) : item;

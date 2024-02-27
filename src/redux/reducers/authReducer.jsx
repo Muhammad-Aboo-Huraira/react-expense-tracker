@@ -23,6 +23,7 @@ const authSlice = createSlice({
     },
     signInError(state, action) {
       state.isLoading = false;
+      state.user = null;
       state.error = action.payload;
     },
     signUpSuccess(state, action) {

@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   isLoading: false,
-  accounts: null,
+  account: [],
   error: null,
 };
 
@@ -18,20 +18,22 @@ const accountsSlice = createSlice({
     resetAccounts: () => initialState,
     addAccountsSuccess(state, action) {
       state.isLoading = false;
-      state.accounts = action.payload;
+      state.account = action.payload;
       state.error = null;
     },
     addAccountsError(state, action) {
       state.isLoading = false;
+      state.account = [];
       state.error = action.payload;
     },
     deleteAccountsSuccess(state) {
       state.isLoading = false;
-      state.accounts = null;
+      state.account = [];
       state.error = null;
     },
     deleteAccountsError(state, action) {
       state.isLoading = false;
+      state.account = [];
       state.error = action.payload;
     },
   },

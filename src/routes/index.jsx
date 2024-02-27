@@ -5,12 +5,12 @@ import UnProtectedRoutes from "./UnProtectedRoutes";
 import Signup from "../Pages/AuthFlow/Signup";
 import Login from "../Pages/AuthFlow/Login";
 import ForgotPassword from "../Pages/AuthFlow/ForgotPassword";
-import Dashboard from "../Pages/MainFlow/Dashboard/Dashboard";
 import Layout from "../Layout/Layout";
 import AllAccounts from "../Pages/MainFlow/AllAccounts/AllAccounts";
 import AllCategories from "../Pages/MainFlow/AllCategories/AllCategories";
 import PerformTransactions from "../Pages/MainFlow/PerformTransaction/PerformTransactions";
 import AllTransactions from "../Pages/MainFlow/AllTransactions/AllTransactions";
+import Dashboard from "../Pages/MainFlow/Dashboard/Dashboard";
 
 const RoutesIndex = () => {
   return (

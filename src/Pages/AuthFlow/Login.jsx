@@ -77,13 +77,13 @@ const useStyles = makeStyles((theme) => ({
   },
   iconButton: {
     "&:hover": {
-      backgroundColor: "transparent", // Remove hover background color
+      backgroundColor: "transparent",
     },
     "&:focus": {
       outline: "none",
     },
     "&:active": {
-      backgroundColor: "transparent", // Remove click background color
+      backgroundColor: "transparent", 
     },
   },
 }));
@@ -180,6 +180,7 @@ const Login = () => {
           variant="contained"
           color="primary"
           type="submit"
+          disabled={isLoading} 
         >
           {isLoading ? (
             <CircularProgress size={24} className={classes.loader} />

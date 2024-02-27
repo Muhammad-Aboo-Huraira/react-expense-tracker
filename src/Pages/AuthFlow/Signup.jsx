@@ -189,6 +189,7 @@ const Signup = () => {
           variant="contained"
           color="primary"
           type="submit"
+          disabled={isLoading} 
         >
           {isLoading ? (
             <CircularProgress size={24} className={classes.loader} />
