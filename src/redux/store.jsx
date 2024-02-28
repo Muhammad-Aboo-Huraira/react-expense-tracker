@@ -8,6 +8,7 @@ import {
 import { resetAuth } from "./reducers/authReducer";
 import { resetAccounts } from "./reducers/accountsReducer";
 import { resetCategories } from "./reducers/categoriesReducer";
+import { resetTransactions } from "./reducers/transactionsReducer";
 
 
 const store = configureStore({
@@ -26,6 +27,7 @@ export function logOut() {
       dispatch(resetAuth());
       dispatch(resetAccounts());
       dispatch(resetCategories());
+      dispatch(resetTransactions());
       await persistor.purge();
       localStorage.clear();
     };

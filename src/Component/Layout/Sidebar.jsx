@@ -77,8 +77,8 @@ export default function Sidebar({ logout, data }) {
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
     { text: 'Perform Transactions', icon: <MonetizationOnIcon />, path: '/performtransaction' },
     { text: 'All Transactions', icon: <ListAltIcon />, path: '/alltransactions' },
-    { text: 'All Accounts', icon: <AccountBalanceIcon />, path: '/allaccounts' },
-    { text: 'All Categories', icon: <CategoryIcon />, path: '/allcategories' }
+    { text: 'Add Accounts', icon: <AccountBalanceIcon />, path: '/allaccounts' },
+    { text: 'Add Categories', icon: <CategoryIcon />, path: '/allcategories' }
   ];
 
   const navigate = useNavigate();

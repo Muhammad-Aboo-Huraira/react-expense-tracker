@@ -73,7 +73,7 @@ export const deleteCategory = (category, userId, newCategories) => {
   };
 };
 
-const categoryExists = async (categoryName, userId) => {
+export const categoryExists = async (categoryName, userId) => {
   const categoriesRef = collection(db, "categories");
   const q = query(
     categoriesRef,

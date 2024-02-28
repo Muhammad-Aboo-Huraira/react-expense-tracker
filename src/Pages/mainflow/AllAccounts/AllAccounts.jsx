@@ -2,11 +2,24 @@ import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { dispatch } from "../../../redux/store";
-import { useSelector } from "react-redux";
-import { addAccounts } from "../../../redux/actions/accountsActions";
-import { Box, Card, CardContent, CircularProgress, Container, Snackbar } from "@material-ui/core";
-import MuiAlert from '@mui/material/Alert';
+import { useDispatch, useSelector } from "react-redux";
+import {
+  Box,
+  Card,
+  CardContent,
+  CircularProgress,
+  Container,
+  Snackbar,
+  IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
+import { Delete as DeleteIcon } from "@mui/icons-material";
+import { addAccounts, bankAccountExists, deleteAccount } from "../../../redux/actions/accountsActions";
+import MuiAlert from "@mui/material/Alert";
 
 const AllAccounts = () => {
   const [accountName, setAccountName] = useState("");
@@ -14,11 +27,16 @@ const AllAccounts = () => {
   const userId = useSelector((state) => state.auth.user.uid);
   const isLoading = useSelector((state) => state.accounts.isLoading);
   const newAccounts = useSelector((state) => state.accounts.account);
+  const dispatch = useDispatch();
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+  const [accountToDelete, setAccountToDelete] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
 
-const handleSnackbarClose = (event, reason) => {
+  const handleSnackbarClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
@@ -26,7 +44,10 @@ const handleSnackbarClose = (event, reason) => {
   };
 
   const handleAccountNameChange = (event) => {
-    setAccountName(event.target.value);
+    let value = event.target.value;
+    if (value.length <= 10) {
+      setAccountName(value);
+    }
   };
 
   const handleAmountChange = (event) => {
@@ -39,19 +60,61 @@ const handleSnackbarClose = (event, reason) => {
     }
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    dispatch(addAccounts(accountName, amount, userId, newAccounts));
-    setAccountName("");
-    setAmount("");
-    setSnackbarMessage("Account added successfully!");
-      setSnackbarSeverity("success"); // change agr error ka show karana ho toh error nhi toh success
+    setIsSubmitting(true)
+    try {
+      const bankAccountAreadyExists = await bankAccountExists(accountName, userId);
+      if (!bankAccountAreadyExists) {
+        await dispatch(addAccounts(accountName, amount, userId, newAccounts));
+        setAccountName("");
+        setAmount("");
+        setSnackbarMessage("Account added successfully!");
+        setSnackbarSeverity("success");
+        setSnackbarOpen(true);
+        setIsSubmitting(false)
+      } else {
+        setSnackbarMessage("Account already exists!");
+        setSnackbarSeverity("error");
+        setAccountName("");
+        setAmount("");
+        setSnackbarOpen(true);
+        setIsSubmitting(false)
+      }
+    } catch (error) {
+      setSnackbarMessage("Failed to add account");
+      setSnackbarSeverity("error");
       setSnackbarOpen(true);
+    }
+  };
+
+  const handleDeleteAccount = (accountName) => {
+    setAccountToDelete(accountName);
+    setDeleteConfirmationOpen(true);
+  };
+
+  const confirmDeleteAccount = async () => {
+    setIsDeletingAccount(true);
+    try {
+      await dispatch(deleteAccount(accountToDelete, userId, newAccounts));
+      setSnackbarMessage("Account deleted successfully!");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
+    } catch (error) {
+      setSnackbarMessage("Failed to delete account");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+    }
+    setDeleteConfirmationOpen(false);
+    setIsDeletingAccount(false);
+  };
+
+  const cancelDeleteAccount = () => {
+    setDeleteConfirmationOpen(false);
   };
 
   return (
     <Container maxWidth="md">
-      {" "}
       <Typography variant="h4" gutterBottom>
         Add Account
       </Typography>
@@ -80,26 +143,26 @@ const handleSnackbarClose = (event, reason) => {
           type="submit"
           variant="contained"
           color="primary"
-          disabled={isLoading}
+          disabled={isLoading && isSubmitting}
         >
-          {isLoading ? <CircularProgress size={24} /> : "ADD ACCOUNT"}
+          {isLoading && isSubmitting ? <CircularProgress size={24} /> : "ADD ACCOUNT"}
         </Button>
       </form>
       <br />
       <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={6000}
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <MuiAlert
           onClose={handleSnackbarClose}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
         >
-          <MuiAlert
-            onClose={handleSnackbarClose}
-            severity={snackbarSeverity}
-            sx={{ width: "100%" }}
-          >
-            {snackbarMessage}
-          </MuiAlert>
-        </Snackbar>
-        <Typography variant="h4" gutterBottom>
+          {snackbarMessage}
+        </MuiAlert>
+      </Snackbar>
+      <Typography variant="h4" gutterBottom>
         All Accounts
       </Typography>
       <Box
@@ -110,19 +173,49 @@ const handleSnackbarClose = (event, reason) => {
       >
         {newAccounts.map((accountItem, index) => (
           <Card key={index} style={{ marginBottom: "16px", width: "30%" }}>
-            {" "}
-            {/* Adjust card width and margin as needed */}
             <CardContent>
-            <Typography variant="h6" component="div">
+              <Typography variant="h6" component="div">
                 Account: {accountItem.accountName}
               </Typography>
               <Typography variant="body2">
                 Amount: {accountItem.amount}
               </Typography>
+              <IconButton
+                color="primary"
+                aria-label="delete account"
+                onClick={() => handleDeleteAccount(accountItem.accountName)}
+              >
+                {isDeletingAccount && accountToDelete === accountItem.accountName ? (
+                  <CircularProgress size={24} />
+                ) : (
+                  <DeleteIcon />
+                )}
+              </IconButton>
             </CardContent>
           </Card>
         ))}
       </Box>
+      <Dialog
+        open={deleteConfirmationOpen}
+        onClose={cancelDeleteAccount}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Confirm Deletion</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete the account?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={cancelDeleteAccount} color="primary" variant="contained">
+            Cancel
+          </Button>
+          <Button onClick={confirmDeleteAccount} color="primary" variant="contained" autoFocus>
+            Yes, Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };

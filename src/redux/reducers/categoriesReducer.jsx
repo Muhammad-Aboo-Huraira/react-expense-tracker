@@ -32,7 +32,6 @@ const categoriesSlice = createSlice({
     },
     deleteCategoriesError(state, action) {
       state.isLoading = false;
-      state.category = [];
       state.error = action.payload;
     },
   },

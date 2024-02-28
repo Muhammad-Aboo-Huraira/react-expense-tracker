@@ -24,6 +24,7 @@ import {
 import { setStorageItem } from "../../utils";
 import { addAccountsSuccess } from "../reducers/accountsReducer";
 import { addCategoriesSuccess } from "../reducers/categoriesReducer";
+import { addTransactionsSuccess } from "../reducers/transactionsReducer";
 
 export const signUp = (username, email, password, navigate) => {
   return async (dispatch) => {
@@ -102,20 +103,29 @@ export const signIn = (email, password, navigate) => {
           collection(db, "categories"),
           where("user_id", "==", user.uid)
         );
+        const transactionsSnapshot = await getDocs(
+          collection(db, "transactions"),
+          where("user_id", "==", user.uid)
+        );
         const accountsData = [];
         accountsSnapshot.forEach((doc) => {
-          accountsData.push(doc.data());
+          accountsData.push({...doc.data(), doc_id : doc.id});
         });
 
         const categoriesData = [];
         categoriesSnapshot.forEach((doc) => {
-          categoriesData.push(doc.data());
+          categoriesData.push({...doc.data(), doc_id : doc.id});
+        });
+        const transactionsData = [];
+        transactionsSnapshot.forEach((doc) => {
+          transactionsData.push({...doc.data(), doc_id : doc.id});
         });
         console.log("Accounts: ", accountsData)
         console.log("Categories: ", categoriesData)
-        dispatch(signInSuccess(user));
+      dispatch(signInSuccess(user));
         dispatch(addAccountsSuccess(accountsData));
         dispatch(addCategoriesSuccess(categoriesData));
+        dispatch(addTransactionsSuccess(transactionsData));
         console.log("Logged in successfully!");
         setStorageItem("user", JSON.stringify(user));
         // localStorage.setItem("user", JSON.stringify(user));

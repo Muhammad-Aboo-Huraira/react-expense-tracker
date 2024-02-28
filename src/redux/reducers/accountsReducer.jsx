@@ -23,17 +23,15 @@ const accountsSlice = createSlice({
     },
     addAccountsError(state, action) {
       state.isLoading = false;
-      state.account = [];
       state.error = action.payload;
     },
-    deleteAccountsSuccess(state) {
+    deleteAccountsSuccess(state, action) {
       state.isLoading = false;
-      state.account = [];
+      state.account = action.payload;
       state.error = null;
     },
     deleteAccountsError(state, action) {
       state.isLoading = false;
-      state.account = [];
       state.error = action.payload;
     },
   },

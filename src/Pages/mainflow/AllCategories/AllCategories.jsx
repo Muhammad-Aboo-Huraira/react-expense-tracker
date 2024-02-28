@@ -11,34 +11,42 @@ import {
   Container,
   Snackbar,
   IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import { Delete as DeleteIcon } from "@mui/icons-material";
 import {
   addCategories,
+  categoryExists,
   deleteCategory,
 } from "../../../redux/actions/categoriesActions";
 import MuiAlert from "@mui/material/Alert";
-import { addCategoriesError } from "../../../redux/reducers/categoriesReducer";
 
 const AllCategories = () => {
   const [category, setCategory] = useState("");
   const userId = useSelector((state) => state.auth.user.uid);
   const isLoading = useSelector((state) => state.categories.isLoading);
   const newCategories = useSelector((state) => state.categories.category);
-  let categoriesError = useSelector((state) => state.categories.error);
   const dispatch = useDispatch();
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeletingCategory, setIsDeletingCategory] = useState(false);
 
-  useEffect(() => {
-    if (categoriesError) {
-      setSnackbarMessage(categoriesError);
-      setSnackbarSeverity("error");
-      setSnackbarOpen(true);
-      dispatch(addCategoriesError(""));
-    }
-  }, [categoriesError]);
+  // useEffect(() => {
+  //   if (categoriesError) {
+  //     setSnackbarMessage(categoriesError);
+  //     setSnackbarSeverity("error");
+  //     setSnackbarOpen(true);
+  //     dispatch(addCategoriesError(""));
+  //   }
+  // }, [categoriesError]);
 
   const handleSnackbarClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -54,20 +62,50 @@ const AllCategories = () => {
     }
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    dispatch(addCategories(category, userId, newCategories));
-    setCategory("");
-    setSnackbarMessage("Category added successfully!");
-    setSnackbarSeverity("success");
-    setSnackbarOpen(true);
+    setIsSubmitting(true)
+    if (category === "Home" || category === "Shopping" || category === "Utility bills") {
+      setCategory("");
+      setSnackbarMessage("Category already exists!");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+      return;
+    }
+    const categoryAreadyExists = await categoryExists(category, userId);
+    if (!categoryAreadyExists) {
+      await dispatch(addCategories(category, userId, newCategories));
+      setCategory("");
+      setSnackbarMessage("Category added successfully!");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
+      setIsSubmitting(false);
+    } else {
+      setCategory("");
+      setSnackbarMessage("Category already exists!");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+      setIsSubmitting(false);
+    }
   };
 
   const handleDeleteCategory = (categoryName) => {
-    dispatch(deleteCategory(categoryName, userId, newCategories));
+    setCategoryToDelete(categoryName);
+    setDeleteConfirmationOpen(true);
+  };
+
+  const confirmDeleteCategory = async () => {
+    setIsDeletingCategory(true);
+    await dispatch(deleteCategory(categoryToDelete, userId, newCategories));
     setSnackbarMessage("Category deleted successfully!");
     setSnackbarSeverity("success");
     setSnackbarOpen(true);
+    setDeleteConfirmationOpen(false);
+    setIsDeletingCategory(false);
+  };
+
+  const cancelDeleteCategory = () => {
+    setDeleteConfirmationOpen(false);
   };
 
   return (
@@ -89,9 +127,9 @@ const AllCategories = () => {
           type="submit"
           variant="contained"
           color="primary"
-          disabled={isLoading}
+          disabled={isLoading && isSubmitting}
         >
-          {isLoading ? <CircularProgress size={24} /> : "ADD NEW CATEGORY"}
+          {isLoading && isSubmitting ? <CircularProgress size={24} /> : "ADD NEW CATEGORY"}
         </Button>
       </form>
       <br />
@@ -147,13 +185,37 @@ const AllCategories = () => {
                 color="primary"
                 aria-label="delete category"
                 onClick={() => handleDeleteCategory(categoryItem.categoryName)}
-              >
+              >{isLoading && isDeletingCategory && categoryToDelete === categoryItem.categoryName ? (
+                <CircularProgress size={24} />
+              ) : (
                 <DeleteIcon />
+              )}
               </IconButton>
             </CardContent>
           </Card>
         ))}
       </Box>
+      <Dialog
+        open={deleteConfirmationOpen}
+        onClose={cancelDeleteCategory}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Confirm Deletion</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete the category?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={cancelDeleteCategory} color="primary" variant="contained">
+            Cancel
+          </Button>
+          <Button onClick={confirmDeleteCategory} color="primary" variant="contained" autoFocus>
+            Yes, Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };

@@ -6,7 +6,8 @@ import {
   query,
   where,
   getDocs,
-  deleteDoc
+  deleteDoc,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import {
   getAuth,
@@ -37,5 +38,6 @@ export {
   query,
   getDocs,
   where,
-  deleteDoc
+  deleteDoc,
+  serverTimestamp
 };
