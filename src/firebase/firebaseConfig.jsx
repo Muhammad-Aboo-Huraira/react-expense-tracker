@@ -1,10 +1,14 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import {
   getFirestore,
+  doc,
   collection,
   addDoc,
   query,
+  updateDoc,
   where,
+  getDoc,
+  orderBy,
   getDocs,
   deleteDoc,
   serverTimestamp
@@ -36,6 +40,10 @@ export {
   collection,
   addDoc,
   query,
+  getDoc,
+  updateDoc,
+  orderBy,
+  doc,
   getDocs,
   where,
   deleteDoc,

@@ -34,6 +34,15 @@ const accountsSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
+    updateAccountsSuccess(state, action) {
+      state.isLoading = false;
+      state.account = action.payload;
+      state.error = null;
+    },
+    updateAccountsError(state, action) {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
   },
 });
 
@@ -44,7 +53,9 @@ export const {
   addAccountsSuccess,
   addAccountsError,
   deleteAccountsSuccess,
-  deleteAccountsError
+  deleteAccountsError,
+  updateAccountsSuccess,
+  updateAccountsError,
 } = accountsSlice.actions;
 
 export default accountsSlice.reducer;

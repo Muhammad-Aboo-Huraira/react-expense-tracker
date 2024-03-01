@@ -18,7 +18,11 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { Delete as DeleteIcon } from "@mui/icons-material";
-import { addAccounts, bankAccountExists, deleteAccount } from "../../../redux/actions/accountsActions";
+import {
+  addAccounts,
+  bankAccountExists,
+  deleteAccount,
+} from "../../../redux/actions/accountsActions";
 import MuiAlert from "@mui/material/Alert";
 
 const AllAccounts = () => {
@@ -27,6 +31,17 @@ const AllAccounts = () => {
   const userId = useSelector((state) => state.auth.user.uid);
   const isLoading = useSelector((state) => state.accounts.isLoading);
   const newAccounts = useSelector((state) => state.accounts.account);
+  const filteredAccounts = newAccounts.filter(
+    (accountItem) =>
+      accountItem.accountName !== "Cash" &&
+      accountItem.accountName !== "Savings"
+  );
+  const cashAmount =
+    newAccounts.find((accountItem) => accountItem.accountName === "Cash")
+      ?.amount || 0;
+  const savingsAmount =
+    newAccounts.find((accountItem) => accountItem.accountName === "Savings")
+      ?.amount || 0;
   const dispatch = useDispatch();
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
@@ -62,9 +77,12 @@ const AllAccounts = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setIsSubmitting(true)
+    setIsSubmitting(true);
     try {
-      const bankAccountAreadyExists = await bankAccountExists(accountName, userId);
+      const bankAccountAreadyExists = await bankAccountExists(
+        accountName,
+        userId
+      );
       if (!bankAccountAreadyExists) {
         await dispatch(addAccounts(accountName, amount, userId, newAccounts));
         setAccountName("");
@@ -72,14 +90,14 @@ const AllAccounts = () => {
         setSnackbarMessage("Account added successfully!");
         setSnackbarSeverity("success");
         setSnackbarOpen(true);
-        setIsSubmitting(false)
+        setIsSubmitting(false);
       } else {
         setSnackbarMessage("Account already exists!");
         setSnackbarSeverity("error");
         setAccountName("");
         setAmount("");
         setSnackbarOpen(true);
-        setIsSubmitting(false)
+        setIsSubmitting(false);
       }
     } catch (error) {
       setSnackbarMessage("Failed to add account");
@@ -114,7 +132,7 @@ const AllAccounts = () => {
   };
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="md" sx={{maxWidth:'500px !important'}}>
       <Typography variant="h4" gutterBottom>
         Add Account
       </Typography>
@@ -136,6 +154,7 @@ const AllAccounts = () => {
           onChange={handleAmountChange}
           fullWidth
           margin="normal"
+          autoComplete="off"
           required
           InputProps={{ inputProps: { min: 0, max: 9999999 } }}
         />
@@ -145,7 +164,11 @@ const AllAccounts = () => {
           color="primary"
           disabled={isLoading && isSubmitting}
         >
-          {isLoading && isSubmitting ? <CircularProgress size={24} /> : "ADD ACCOUNT"}
+          {isLoading && isSubmitting ? (
+            <CircularProgress size={24} />
+          ) : (
+            "ADD ACCOUNT"
+          )}
         </Button>
       </form>
       <br />
@@ -169,10 +192,26 @@ const AllAccounts = () => {
         display="flex"
         flexDirection="row"
         flexWrap="wrap"
-        justifyContent="space-between"
+        justifyContent="space-around"
       >
-        {newAccounts.map((accountItem, index) => (
-          <Card key={index} style={{ marginBottom: "16px", width: "30%" }}>
+        <Card sx={{margin : "20px"}}>
+          <CardContent>
+            <Typography variant="h6" component="div">
+              Account: Cash
+            </Typography>
+            <Typography variant="body2">Amount: {cashAmount}</Typography>
+          </CardContent>
+        </Card>
+        <Card sx={{margin : "20px"}}>
+          <CardContent>
+            <Typography variant="h6" component="div">
+              Account: Savings
+            </Typography>
+            <Typography variant="body2">Amount: {savingsAmount}</Typography>
+          </CardContent>
+        </Card>
+        {filteredAccounts.map((accountItem, index) => (
+          <Card key={index} sx={{margin : "20px"}}>
             <CardContent>
               <Typography variant="h6" component="div">
                 Account: {accountItem.accountName}
@@ -181,15 +220,11 @@ const AllAccounts = () => {
                 Amount: {accountItem.amount}
               </Typography>
               <IconButton
-                color="primary"
+                color="error"
                 aria-label="delete account"
                 onClick={() => handleDeleteAccount(accountItem.accountName)}
               >
-                {isDeletingAccount && accountToDelete === accountItem.accountName ? (
-                  <CircularProgress size={24} />
-                ) : (
-                  <DeleteIcon />
-                )}
+                <DeleteIcon />
               </IconButton>
             </CardContent>
           </Card>
@@ -208,11 +243,21 @@ const AllAccounts = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={cancelDeleteAccount} color="primary" variant="contained">
+          <Button
+            onClick={cancelDeleteAccount}
+            color="error"
+            variant="contained"
+          >
             Cancel
           </Button>
-          <Button onClick={confirmDeleteAccount} color="primary" variant="contained" autoFocus>
-            Yes, Delete
+          <Button
+            onClick={confirmDeleteAccount}
+            color="primary"
+            variant="contained"
+            disabled={isDeletingAccount}
+            autoFocus
+          >
+            {isDeletingAccount ? <CircularProgress size={24} /> : "Yes, Delete"}
           </Button>
         </DialogActions>
       </Dialog>

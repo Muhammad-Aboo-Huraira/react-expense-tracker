@@ -7,10 +7,13 @@ import {
   Typography,
   CircularProgress,
   Snackbar,
+  Box,
 } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import { useDispatch, useSelector } from "react-redux";
 import { addTransactions } from "../../../redux/actions/transactionsActions";
+import { updateAccount } from "../../../redux/actions/accountsActions";
+import { useNavigate } from "react-router";
 
 const AllTransactions = () => {
   const [amount, setAmount] = useState("");
@@ -18,12 +21,24 @@ const AllTransactions = () => {
   const [account, setAccount] = useState("");
   const [category, setCategory] = useState("");
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const userId = useSelector((state) => state.auth.user.uid);
   const newAccounts = useSelector((state) => state.accounts.account);
+  const filteredAccounts = newAccounts.filter(
+    (accountItem) =>
+      accountItem.accountName !== "Cash" &&
+      accountItem.accountName !== "Savings"
+  );
   const newCategories = useSelector((state) => state.categories.category);
+  const filteredCategories = newCategories.filter(
+    (categoryItem) =>
+      categoryItem.category !== "Home" &&
+      categoryItem.category !== "Shopping" &&
+      categoryItem.category !== "Utility bills"
+  );
   const newTransaction = useSelector(
     (state) => state.transactions.transactionsData
   );
@@ -39,24 +54,81 @@ const AllTransactions = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsSubmitting(true);
-    await dispatch(
-      addTransactions(
-        account,
-        amount,
-        userId,
-        newTransaction,
-        category,
-        transactionType
-      )
-    );
-    setAccount("");
-    setAmount("");
-    setCategory("");
-    setTransactionType("");
-    setSnackbarMessage("Transaction added successfully!");
-    setSnackbarSeverity("success");
-    setSnackbarOpen(true);
-    setIsSubmitting(false);
+    const selectedAccount = newAccounts.find(item => item.accountName === account);
+    if (transactionType === "Expense") {
+      if (selectedAccount.amount > parseInt(amount) ) {
+        await dispatch(
+          addTransactions(
+            account,
+            amount,
+            userId,
+            newTransaction,
+            category,
+            transactionType
+          )
+        );
+        await dispatch(
+          updateAccount(
+            account,
+            parseInt(amount) * -1,
+            userId,
+            newAccounts
+          )
+        );
+        setAccount("");
+        setAmount("");
+        setCategory("");
+        setTransactionType("");
+        setSnackbarMessage("Transaction added successfully!");
+        setSnackbarSeverity("success");
+        setSnackbarOpen(true);
+        setIsSubmitting(false);
+        setTimeout(() => {
+          navigate('/alltransactions');
+        }, 3000);
+        
+      } else {
+
+        setAccount("");
+        setAmount("");
+        setCategory("");
+        setTransactionType("");
+        setSnackbarMessage("You do not have enough amount in selected bank!");
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
+        setIsSubmitting(false);
+      }
+    } else {
+      await dispatch(
+        addTransactions(
+          account,
+          amount,
+          userId,
+          newTransaction,
+          category,
+          transactionType
+        )
+      );
+      await dispatch(
+        updateAccount(
+          account,
+          parseInt(amount),
+          userId,
+          newAccounts
+        )
+      );
+      setAccount("");
+      setAmount("");
+      setCategory("");
+      setTransactionType("");
+      setSnackbarMessage("Transaction added successfully!");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
+      setIsSubmitting(false);
+      setTimeout(() => {
+        navigate('/alltransactions');
+      }, 3000);
+    }
   };
 
   const handleAmountChange = (event) => {
@@ -70,7 +142,7 @@ const AllTransactions = () => {
   };
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="md" sx={{maxWidth:'400px !important'}}>
       <Typography variant="h4" gutterBottom>
         Perform Transaction
       </Typography>
@@ -111,7 +183,7 @@ const AllTransactions = () => {
         >
           <MenuItem value="Cash">Cash</MenuItem>
           <MenuItem value="Savings">Savings</MenuItem>
-          {newAccounts.map((accountsItem) => (
+          {filteredAccounts.map((accountsItem) => (
             <MenuItem
               key={accountsItem.doc_id}
               value={accountsItem.accountName}
@@ -134,7 +206,7 @@ const AllTransactions = () => {
           <MenuItem value="Home">Home</MenuItem>
           <MenuItem value="Shopping">Shopping</MenuItem>
           <MenuItem value="Utility bills">Utility bills</MenuItem>
-          {newCategories.map((categoryItem) => (
+          {filteredCategories.map((categoryItem) => (
             <MenuItem
               key={categoryItem.doc_id}
               value={categoryItem.categoryName}

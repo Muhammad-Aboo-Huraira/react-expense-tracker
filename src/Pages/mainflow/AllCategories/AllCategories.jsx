@@ -30,6 +30,12 @@ const AllCategories = () => {
   const userId = useSelector((state) => state.auth.user.uid);
   const isLoading = useSelector((state) => state.categories.isLoading);
   const newCategories = useSelector((state) => state.categories.category);
+  const filteredCategories = newCategories.filter(
+    (categoryItem) =>
+      categoryItem.category !== "Home" &&
+      categoryItem.category !== "Shopping" &&
+      categoryItem.category !== "Utility bills"
+  );
   const dispatch = useDispatch();
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
@@ -64,8 +70,12 @@ const AllCategories = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setIsSubmitting(true)
-    if (category === "Home" || category === "Shopping" || category === "Utility bills") {
+    setIsSubmitting(true);
+    if (
+      category === "Home" ||
+      category === "Shopping" ||
+      category === "Utility bills"
+    ) {
       setCategory("");
       setSnackbarMessage("Category already exists!");
       setSnackbarSeverity("error");
@@ -109,7 +119,7 @@ const AllCategories = () => {
   };
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="md" sx={{maxWidth:'500px !important'}}>
       <Typography variant="h4" gutterBottom>
         Add New Category
       </Typography>
@@ -129,7 +139,11 @@ const AllCategories = () => {
           color="primary"
           disabled={isLoading && isSubmitting}
         >
-          {isLoading && isSubmitting ? <CircularProgress size={24} /> : "ADD NEW CATEGORY"}
+          {isLoading && isSubmitting ? (
+            <CircularProgress size={24} />
+          ) : (
+            "ADD NEW CATEGORY"
+          )}
         </Button>
       </form>
       <br />
@@ -153,43 +167,41 @@ const AllCategories = () => {
         display="flex"
         flexDirection="row"
         flexWrap="wrap"
-        justifyContent="space-between"
+        justifyContent="space-around"
+        fullWidth
       >
-                {/* Home category */}
-                <Card style={{ marginBottom: "16px", width: "30%" }}>
+        {/* Home category */}
+        <Card sx={{margin : "20px"}}>
           <CardContent>
             <Typography variant="body2">Home</Typography>
           </CardContent>
         </Card>
 
         {/* Shopping category */}
-        <Card style={{ marginBottom: "16px", width: "30%" }}>
+        <Card sx={{margin : "20px"}}>
           <CardContent>
             <Typography variant="body2">Shopping</Typography>
           </CardContent>
         </Card>
 
         {/* Utility bills category */}
-        <Card style={{ marginBottom: "16px", width: "30%" }}>
+        <Card sx={{margin : "20px"}}>
           <CardContent>
             <Typography variant="body2">Utility bills</Typography>
           </CardContent>
         </Card>
-        {newCategories.map((categoryItem, index) => (
-          <Card key={index} style={{ marginBottom: "16px", width: "30%" }}>
+        {filteredCategories.map((categoryItem, index) => (
+          <Card key={index} sx={{margin : "20px"}}>
             <CardContent>
               <Typography variant="body2">
                 {categoryItem.categoryName}
               </Typography>
               <IconButton
-                color="primary"
+                color="error"
                 aria-label="delete category"
                 onClick={() => handleDeleteCategory(categoryItem.categoryName)}
-              >{isLoading && isDeletingCategory && categoryToDelete === categoryItem.categoryName ? (
-                <CircularProgress size={24} />
-              ) : (
+              >
                 <DeleteIcon />
-              )}
               </IconButton>
             </CardContent>
           </Card>
@@ -208,11 +220,25 @@ const AllCategories = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={cancelDeleteCategory} color="primary" variant="contained">
+          <Button
+            onClick={cancelDeleteCategory}
+            color="error"
+            variant="contained"
+          >
             Cancel
           </Button>
-          <Button onClick={confirmDeleteCategory} color="primary" variant="contained" autoFocus>
-            Yes, Delete
+          <Button
+            onClick={confirmDeleteCategory}
+            color="primary"
+            variant="contained"
+            disabled={isLoading && isDeletingCategory}
+            autoFocus
+          >
+            {isLoading && isDeletingCategory ? (
+              <CircularProgress size={24} />
+            ) : (
+              "Yes, Delete"
+            )}
           </Button>
         </DialogActions>
       </Dialog>

@@ -23,6 +23,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { persistor } from "../../redux/store";
+import { resetAuth } from "../../redux/reducers/authReducer";
 
 const validationSchema = yup.object({
   email: yup
@@ -102,8 +103,7 @@ const Login = () => {
     if (loginError === "Incorrect email or password.") {
       setSnackbarMessage("Incorrect email or password.");
       setOpenSnackbar(true);
-      persistor.purge();
-      localStorage.clear();
+      dispatch(resetAuth());
     } else if (loginError) {
       setSnackbarMessage("An error occurred. Please try again.");
       setOpenSnackbar(true);

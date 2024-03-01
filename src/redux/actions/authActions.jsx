@@ -6,6 +6,7 @@ import {
   query,
   where,
   getDocs,
+  orderBy,
 } from "../../firebase/firebaseConfig";
 import {
   createUserWithEmailAndPassword,
@@ -45,10 +46,18 @@ export const signUp = (username, email, password, navigate) => {
         console.error("Error adding document: ", error);
       });
 
-      addDoc(collection(db, "accounts"), {
+      addDoc(collection(db, "banks"), {
         user_id: user.uid,
-        cash: 0,
-        savings: 0,
+        accountName: "Cash",
+        amount: 0,
+      }).catch((error) => {
+        console.error("Error adding document: ", error);
+      });
+
+      addDoc(collection(db, "banks"), {
+        user_id: user.uid,
+        accountName: "Savings",
+        amount: 0,
       }).catch((error) => {
         console.error("Error adding document: ", error);
       });
@@ -95,6 +104,11 @@ export const signIn = (email, password, navigate) => {
       const isRegistered = await isEmailAlreadyRegistered(email);
       console.log(user);
       if (isRegistered) {
+        const usersSnapshot = await getDocs(
+          collection(db, "users"),
+          where("user_id", "==", user.uid)
+        );
+
         const accountsSnapshot = await getDocs(
           collection(db, "banks"),
           where("user_id", "==", user.uid)
@@ -105,30 +119,35 @@ export const signIn = (email, password, navigate) => {
         );
         const transactionsSnapshot = await getDocs(
           collection(db, "transactions"),
-          where("user_id", "==", user.uid)
+          where("user_id", "==", user.uid),
+          orderBy("created_time", "asc")
         );
         const accountsData = [];
         accountsSnapshot.forEach((doc) => {
-          accountsData.push({...doc.data(), doc_id : doc.id});
+          accountsData.push({ ...doc.data(), doc_id: doc.id });
         });
 
         const categoriesData = [];
         categoriesSnapshot.forEach((doc) => {
-          categoriesData.push({...doc.data(), doc_id : doc.id});
+          categoriesData.push({ ...doc.data(), doc_id: doc.id });
         });
         const transactionsData = [];
         transactionsSnapshot.forEach((doc) => {
-          transactionsData.push({...doc.data(), doc_id : doc.id});
+          transactionsData.push({ ...doc.data(), doc_id: doc.id });
         });
-        console.log("Accounts: ", accountsData)
-        console.log("Categories: ", categoriesData)
-      dispatch(signInSuccess(user));
+        const usernames = [];
+        usersSnapshot.forEach((doc) => {
+          const userData = doc.data();
+          const username = userData.username; // Assuming username field exists in the document
+          if (username) {
+            usernames.push(username);
+          }
+        });
+        dispatch(signInSuccess({ ...user, username : usernames }));
         dispatch(addAccountsSuccess(accountsData));
         dispatch(addCategoriesSuccess(categoriesData));
         dispatch(addTransactionsSuccess(transactionsData));
-        console.log("Logged in successfully!");
         setStorageItem("user", JSON.stringify(user));
-        // localStorage.setItem("user", JSON.stringify(user));
         navigate("/dashboard");
       } else {
         dispatch(signInError("Email is not registered."));
