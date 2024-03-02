@@ -16,6 +16,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Tooltip,
 } from "@mui/material";
 import { Delete as DeleteIcon } from "@mui/icons-material";
 import {
@@ -119,7 +120,10 @@ const AllCategories = () => {
   };
 
   return (
-    <Container maxWidth="md" sx={{maxWidth:'800px !important', minWidth: "800px !important"}}>
+    <Container
+      maxWidth="md"
+      sx={{ maxWidth: "800px !important", minWidth: "800px !important" }}
+    >
       <Typography variant="h4" gutterBottom>
         Add New Category
       </Typography>
@@ -161,7 +165,7 @@ const AllCategories = () => {
         </MuiAlert>
       </Snackbar>
       <Typography variant="h4" gutterBottom>
-        All Categories
+        Default Categories
       </Typography>
       <Box
         display="flex"
@@ -169,31 +173,29 @@ const AllCategories = () => {
         flexWrap="wrap"
         justifyContent="space-around"
         fullWidth
+      > {["Home", "Shopping", "Utility bills"].map((categoryName, index) => (
+        <Card key={index} sx={{ margin: "20px", width: "20%" }}>
+          <CardContent>
+            <Typography variant="body2">{categoryName}</Typography>
+          </CardContent>
+        </Card>
+      ))}
+    </Box>
+    <Typography variant="h4" gutterBottom>
+      Other Categories
+    </Typography>
+      <Box
+        display="flex"
+        flexDirection="row"
+        flexWrap="wrap"
+        justifyContent="space-around"
+        fullWidth
       >
-        {/* Home category */}
-        <Card sx={{margin : "20px"}}>
-          <CardContent>
-            <Typography variant="body2">Home</Typography>
-          </CardContent>
-        </Card>
-
-        {/* Shopping category */}
-        <Card sx={{margin : "20px"}}>
-          <CardContent>
-            <Typography variant="body2">Shopping</Typography>
-          </CardContent>
-        </Card>
-
-        {/* Utility bills category */}
-        <Card sx={{margin : "20px"}}>
-          <CardContent>
-            <Typography variant="body2">Utility bills</Typography>
-          </CardContent>
-        </Card>
         {filteredCategories.map((categoryItem, index) => (
-          <Card key={index} sx={{margin : "20px"}}>
+           <Tooltip key={index} title={categoryItem.categoryName} placement="top" sx={{ maxWidth: "none" }}>
+          <Card key={index} sx={{ margin: "20px", width: "20%" }}>
             <CardContent>
-              <Typography variant="body2">
+              <Typography variant="body2" noWrap>
                 {categoryItem.categoryName}
               </Typography>
               <IconButton
@@ -205,6 +207,7 @@ const AllCategories = () => {
               </IconButton>
             </CardContent>
           </Card>
+          </Tooltip>
         ))}
       </Box>
       <Dialog

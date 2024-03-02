@@ -16,6 +16,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Tooltip,
 } from "@mui/material";
 import { Delete as DeleteIcon } from "@mui/icons-material";
 import {
@@ -186,7 +187,7 @@ const AllAccounts = () => {
         </MuiAlert>
       </Snackbar>
       <Typography variant="h4" gutterBottom>
-        All Accounts
+        Default Accounts
       </Typography>
       <Box
         display="flex"
@@ -210,15 +211,30 @@ const AllAccounts = () => {
             <Typography variant="body2">Amount: {savingsAmount}</Typography>
           </CardContent>
         </Card>
+        </Box>
+    <Typography variant="h4" gutterBottom>
+      Other Accounts
+    </Typography>
+      <Box
+        display="flex"
+        flexDirection="row"
+        flexWrap="wrap"
+        justifyContent="space-around"
+        fullWidth
+      >
         {filteredAccounts.map((accountItem, index) => (
-          <Card key={index} sx={{margin : "20px"}}>
+          <Card key={index} sx={{margin : "20px", width: "30%"}}>
             <CardContent>
-              <Typography variant="h6" component="div">
+            <Tooltip key={index} title={accountItem.accountName} placement="top" sx={{ maxWidth: "none" }}>
+              <Typography variant="h6" component="div" noWrap>
                 Account: {accountItem.accountName}
               </Typography>
+              </Tooltip>
+            <Tooltip key={index} title={accountItem.amount} placement="top" sx={{ maxWidth: "none" }}>
               <Typography variant="body2">
                 Amount: {accountItem.amount}
               </Typography>
+              </Tooltip>
               <IconButton
                 color="error"
                 aria-label="delete account"
