@@ -94,7 +94,7 @@ export const updateAccount = (account, newAmount, user_id, newAccounts) => {
       // Update Redux store
       const updatedAccounts = newAccounts.map((item) => {
         if (item.accountName === account) {
-          return { ...item, amount: item.amount + newAmount };
+          return { ...item, amount: parseInt(item.amount) + parseInt(newAmount) };
         }
         return item;
       });
