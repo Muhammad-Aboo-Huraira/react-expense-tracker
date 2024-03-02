@@ -44,7 +44,6 @@ export const addTransactions = (
 
       dispatch(
         addTransactionsSuccess([
-          ...newTransaction,
           {
             created_date: createdDate,
             created_time: serverTimestamp(),
@@ -55,6 +54,7 @@ export const addTransactions = (
             user_id,
             doc_id,
           },
+          ...newTransaction,
         ])
       );
     } catch (error) {

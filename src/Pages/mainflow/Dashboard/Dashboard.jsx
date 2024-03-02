@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { Card, CardContent, Grid, Typography, Paper, Box } from "@mui/material";
+import { Card, CardContent, Grid, Typography, Paper, Box, Container } from "@mui/material";
 import { makeStyles } from "@material-ui/core";
 import { PieChart } from "@mui/x-charts/PieChart";
 
@@ -80,7 +80,7 @@ const Dashboard = () => {
   }, 0);
   const totalAmount = banksAmount + cashAmount + savingsAmount;
   return (
-    <div>
+    <Container maxWidth="md" sx={{maxWidth:'800px !important', minWidth: "800px !important"}}>
       {/* Greeting Paper */}
       <Paper elevation={3} className={classes.paper}>
         <Typography variant="h5" gutterBottom>
@@ -169,7 +169,7 @@ const Dashboard = () => {
     </Box>
   </Paper>
 </Grid>
-    </div>
+</Container>
   );
 };
 

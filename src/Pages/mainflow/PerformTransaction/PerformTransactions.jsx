@@ -142,7 +142,7 @@ const AllTransactions = () => {
   };
 
   return (
-    <Container maxWidth="md" sx={{maxWidth:'400px !important'}}>
+    <Container maxWidth="md" sx={{maxWidth:'800px !important', minWidth: "800px !important"}}>
       <Typography variant="h4" gutterBottom>
         Perform Transaction
       </Typography>
@@ -155,6 +155,7 @@ const AllTransactions = () => {
           onChange={handleAmountChange}
           fullWidth
           margin="normal"
+          autoComplete="off"
           required
           InputProps={{ inputProps: { min: 0, max: 9999999 } }}
         />

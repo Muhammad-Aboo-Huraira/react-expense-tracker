@@ -104,24 +104,30 @@ export const signIn = (email, password, navigate) => {
       const isRegistered = await isEmailAlreadyRegistered(email);
       console.log(user);
       if (isRegistered) {
-        const usersSnapshot = await getDocs(
+        const usersQuery = query(
           collection(db, "users"),
           where("user_id", "==", user.uid)
         );
-
-        const accountsSnapshot = await getDocs(
+        const accountsQuery = query(
           collection(db, "banks"),
           where("user_id", "==", user.uid)
         );
-        const categoriesSnapshot = await getDocs(
+        const categoriesQuery = query(
           collection(db, "categories"),
           where("user_id", "==", user.uid)
         );
-        const transactionsSnapshot = await getDocs(
+        const transactionsQuery = query(
           collection(db, "transactions"),
           where("user_id", "==", user.uid),
           orderBy("created_time", "asc")
         );
+
+        const [usersSnapshot, accountsSnapshot, categoriesSnapshot, transactionsSnapshot] = await Promise.all([
+          getDocs(usersQuery),
+          getDocs(accountsQuery),
+          getDocs(categoriesQuery),
+          getDocs(transactionsQuery)
+        ]);
         const accountsData = [];
         accountsSnapshot.forEach((doc) => {
           accountsData.push({ ...doc.data(), doc_id: doc.id });

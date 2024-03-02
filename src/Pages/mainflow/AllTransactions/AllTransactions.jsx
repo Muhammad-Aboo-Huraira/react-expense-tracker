@@ -45,8 +45,7 @@ const AllTransactions = () => {
     setTransactionToDelete(docId);
     setDeleteConfirmationOpen(true);
   };
-  
-  
+
   const cancelDeleteTransaction = () => {
     setDeleteConfirmationOpen(false);
   };
@@ -62,7 +61,7 @@ const AllTransactions = () => {
   };
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="md" sx={{maxWidth:'800px !important', minWidth: "800px !important"}}>
       <Typography variant="h4" gutterBottom>
         All Transactions
       </Typography>
@@ -78,28 +77,37 @@ const AllTransactions = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-        {transactionsData
-  .slice() // Create a copy of the array to avoid mutating the original data
-  .sort((a, b) => b.created_time.seconds - a.created_time.seconds) // Sort in descending order based on created_time.seconds
-  .map((transaction) => (
-    <TableRow key={transaction.doc_id}>
-      <TableCell>{transaction.account || "-"}</TableCell>
-      <TableCell>{transaction.amount || "-"}</TableCell>
-      <TableCell>{transaction.transactionType || "-"}</TableCell>
-      <TableCell>{transaction.created_date || "-"}</TableCell>
-      <TableCell>{transaction.category || "-"}</TableCell>
-      <TableCell>
-        <IconButton
-          variant="contained"
-          color="error"
-          onClick={() => handleDeleteTransaction(transaction.doc_id)}
-        >
-          <DeleteIcon />
-        </IconButton>
-      </TableCell>
-    </TableRow>
-  ))}
-
+          {transactionsData.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={6} style={{ textAlign: "center" }}>
+                Perform transactions to add data here
+              </TableCell>
+            </TableRow>
+          ) : (
+            transactionsData
+              .slice() // Create a copy of the array to avoid mutating the original data
+              .sort((a, b) => b.created_time.seconds - a.created_time.seconds)
+              .map((transaction) => (
+                <TableRow key={transaction.doc_id}>
+                  <TableCell>{transaction.account || "-"}</TableCell>
+                  <TableCell>{transaction.amount || "-"}</TableCell>
+                  <TableCell>{transaction.transactionType || "-"}</TableCell>
+                  <TableCell>{transaction.created_date || "-"}</TableCell>
+                  <TableCell>{transaction.category || "-"}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      variant="contained"
+                      color="error"
+                      onClick={() =>
+                        handleDeleteTransaction(transaction.doc_id)
+                      }
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))
+          )}
         </TableBody>
       </Table>
       <Dialog
