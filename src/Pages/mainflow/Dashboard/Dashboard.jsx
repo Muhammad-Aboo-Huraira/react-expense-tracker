@@ -1,6 +1,14 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { Card, CardContent, Grid, Typography, Paper, Box, Container } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Grid,
+  Typography,
+  Paper,
+  Box,
+  Container,
+} from "@mui/material";
 import { makeStyles } from "@material-ui/core";
 import { PieChart } from "@mui/x-charts/PieChart";
 
@@ -80,7 +88,10 @@ const Dashboard = () => {
   }, 0);
   const totalAmount = banksAmount + cashAmount + savingsAmount;
   return (
-    <Container maxWidth="md" sx={{maxWidth:'800px !important', minWidth: "800px !important"}}>
+    <Container
+      maxWidth="md"
+      sx={{ maxWidth: "800px !important", minWidth: "800px !important" }}
+    >
       {/* Greeting Paper */}
       <Paper elevation={3} className={classes.paper}>
         <Typography variant="h5" gutterBottom>
@@ -140,36 +151,70 @@ const Dashboard = () => {
         </Grid>
       </Grid>
       <br />
-  <Grid item xs={12} sm={6} md={6} sx={{ height: "200px", textAlign: 'center' }}>
-  <Paper elevation={3} className={classes.paper}>
-    <Typography variant="h6" gutterBottom>
-      Transactions Chart
-    </Typography>
-    <span style={{ backgroundColor: "green", borderRadius: "10px", padding: "3px", margin: "5px" }}>Income</span>
-    <span style={{ backgroundColor: "red", borderRadius: "10px", padding: "3px", margin: "5px" }}>Expense</span>
-    <Box sx={{ display: 'flex', justifyContent: 'center', height: "200px", width: "300px" }}>
-      <PieChart
-        series={[
-          {
-            data: [
-              { name: "Income", value: incomeAmount },
-              { name: "Expense", value: expenseAmount },
-            ],
-            innerRadius: 30,
-            outerRadius: 100,
-            paddingAngle: 5,
-            cornerRadius: 5,
-            cx: "80%",
-            cy: "50%",
-            
-          },
-        ]}
-        colors={["green", "red"]}
-      />
-    </Box>
-  </Paper>
-</Grid>
-</Container>
+      <Grid
+        item
+        xs={12}
+        sm={6}
+        md={6}
+        sx={{ height: "200px", textAlign: "center" }}
+      >
+        <Paper elevation={3} className={classes.paper}>
+          <Typography variant="h6" gutterBottom>
+            Transactions Chart
+          </Typography>
+          <span
+            style={{
+              backgroundColor: "green",
+              borderRadius: "10px",
+              padding: "3px",
+              margin: "5px",
+            }}
+          >
+            Income
+          </span>
+          <span
+            style={{
+              backgroundColor: "red",
+              borderRadius: "10px",
+              padding: "3px",
+              margin: "5px",
+            }}
+          >
+            Expense
+          </span>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              height: "200px",
+              width: "300px",
+            }}
+          >
+            {transactionsData.length === 0 ? (
+              <Typography>Perform transactions to see donut chart</Typography>
+            ) : (
+              <PieChart
+                series={[
+                  {
+                    data: [
+                      { name: "Income", value: incomeAmount },
+                      { name: "Expense", value: expenseAmount },
+                    ],
+                    innerRadius: 30,
+                    outerRadius: 100,
+                    paddingAngle: 5,
+                    cornerRadius: 5,
+                    cx: "80%",
+                    cy: "50%",
+                  },
+                ]}
+                colors={["green", "red"]}
+              />
+            )}
+          </Box>
+        </Paper>
+      </Grid>
+    </Container>
   );
 };
 
