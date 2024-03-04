@@ -90,7 +90,7 @@ const Dashboard = () => {
   return (
     <Container
       maxWidth="md"
-      sx={{ maxWidth: "800px !important", minWidth: "800px !important" }}
+      sx={{ maxWidth: "800px !important", minWidth: "800px !important", marginTop: "20px" }}
     >
       {/* Greeting Paper */}
       <Paper elevation={3} className={classes.paper}>

@@ -61,55 +61,86 @@ const AllTransactions = () => {
   };
 
   return (
-    <Container maxWidth="md" sx={{maxWidth:'800px !important', minWidth: "800px !important"}}>
+    <Container
+      maxWidth="md"
+      sx={{
+        maxWidth: "800px !important",
+        minWidth: "800px !important",
+        marginBottom: "250px",
+        marginTop: "20px",
+      }}
+    >
       <Typography variant="h4" gutterBottom>
         All Transactions
       </Typography>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell style={{ fontWeight: "bold" }}>Account</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Amount</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Type</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Date</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Category</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Delete</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {transactionsData.length === 0 ? (
+      <Container
+        sx={{
+          maxHeight: "420px",
+          overflowY: "auto",
+          border: "1px solid #ccc",
+          borderRadius: "8px",
+          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+          "&::-webkit-scrollbar": {
+            width: "8px",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            background: "#888",
+            borderRadius: "4px",
+          },
+          "&::-webkit-scrollbar-thumb:hover": {
+            background: "#555",
+          },
+          "&::-webkit-scrollbar-track": {
+            background: "#f1f1f1",
+          },
+        }}
+      >
+        <Table>
+          <TableHead>
             <TableRow>
-              <TableCell colSpan={6} style={{ textAlign: "center" }}>
-                Perform transactions to add data here
-              </TableCell>
+              <TableCell style={{ fontWeight: "bold" }}>Account</TableCell>
+              <TableCell style={{ fontWeight: "bold" }}>Amount</TableCell>
+              <TableCell style={{ fontWeight: "bold" }}>Type</TableCell>
+              <TableCell style={{ fontWeight: "bold" }}>Date</TableCell>
+              <TableCell style={{ fontWeight: "bold" }}>Category</TableCell>
+              <TableCell style={{ fontWeight: "bold" }}>Delete</TableCell>
             </TableRow>
-          ) : (
-            transactionsData
-              .slice() // Create a copy of the array to avoid mutating the original data
-              .sort((a, b) => b.created_time.seconds - a.created_time.seconds)
-              .map((transaction) => (
-                <TableRow key={transaction.doc_id}>
-                  <TableCell>{transaction.account || "-"}</TableCell>
-                  <TableCell>{transaction.amount || "-"}</TableCell>
-                  <TableCell>{transaction.transactionType || "-"}</TableCell>
-                  <TableCell>{transaction.created_date || "-"}</TableCell>
-                  <TableCell>{transaction.category || "-"}</TableCell>
-                  <TableCell>
-                    <IconButton
-                      variant="contained"
-                      color="error"
-                      onClick={() =>
-                        handleDeleteTransaction(transaction.doc_id)
-                      }
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))
-          )}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {transactionsData.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={6} style={{ textAlign: "center" }}>
+                  Perform transactions to add data here
+                </TableCell>
+              </TableRow>
+            ) : (
+              transactionsData
+                .slice() // Create a copy of the array to avoid mutating the original data
+                .sort((a, b) => b.created_time.seconds - a.created_time.seconds)
+                .map((transaction) => (
+                  <TableRow key={transaction.doc_id}>
+                    <TableCell>{transaction.account || "-"}</TableCell>
+                    <TableCell>{transaction.amount || "-"}</TableCell>
+                    <TableCell>{transaction.transactionType || "-"}</TableCell>
+                    <TableCell>{transaction.created_date || "-"}</TableCell>
+                    <TableCell>{transaction.category || "-"}</TableCell>
+                    <TableCell>
+                      <IconButton
+                        variant="contained"
+                        color="error"
+                        onClick={() =>
+                          handleDeleteTransaction(transaction.doc_id)
+                        }
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))
+            )}
+          </TableBody>
+        </Table>
+      </Container>
       <Dialog
         open={deleteConfirmationOpen}
         onClose={cancelDeleteTransaction}

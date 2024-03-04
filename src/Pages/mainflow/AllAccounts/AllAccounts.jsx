@@ -133,7 +133,14 @@ const AllAccounts = () => {
   };
 
   return (
-    <Container maxWidth="md" sx={{maxWidth:'800px !important', minWidth: "800px !important"}}>
+    <Container
+      maxWidth="md"
+      sx={{
+        maxWidth: "800px !important",
+        minWidth: "800px !important",
+        marginTop: "20px",
+      }}
+    >
       <Typography variant="h4" gutterBottom>
         Add Account
       </Typography>
@@ -195,7 +202,7 @@ const AllAccounts = () => {
         flexWrap="wrap"
         justifyContent="space-around"
       >
-        <Card sx={{margin : "20px"}}>
+        <Card sx={{ margin: "20px" }}>
           <CardContent>
             <Typography variant="h6" component="div">
               Account: Cash
@@ -203,7 +210,7 @@ const AllAccounts = () => {
             <Typography variant="body2">Amount: {cashAmount}</Typography>
           </CardContent>
         </Card>
-        <Card sx={{margin : "20px"}}>
+        <Card sx={{ margin: "20px" }}>
           <CardContent>
             <Typography variant="h6" component="div">
               Account: Savings
@@ -211,10 +218,10 @@ const AllAccounts = () => {
             <Typography variant="body2">Amount: {savingsAmount}</Typography>
           </CardContent>
         </Card>
-        </Box>
-    <Typography variant="h4" gutterBottom>
-      Other Accounts
-    </Typography>
+      </Box>
+      <Typography variant="h4" gutterBottom>
+        Other Accounts
+      </Typography>
       <Box
         display="flex"
         flexDirection="row"
@@ -223,17 +230,27 @@ const AllAccounts = () => {
         fullWidth
       >
         {filteredAccounts.map((accountItem, index) => (
-          <Card key={index} sx={{margin : "20px", width: "30%"}}>
+          <Card key={index} sx={{ margin: "20px", width: "25%" }}>
             <CardContent>
-            <Tooltip key={index} title={accountItem.accountName} placement="top" sx={{ maxWidth: "none" }}>
-              <Typography variant="h6" component="div" noWrap>
-                Account: {accountItem.accountName}
-              </Typography>
+              <Tooltip
+                key={index}
+                title={accountItem.accountName}
+                placement="top"
+                sx={{ maxWidth: "none" }}
+              >
+                <Typography variant="h6" component="div" noWrap>
+                  Account: {accountItem.accountName}
+                </Typography>
               </Tooltip>
-            <Tooltip key={index} title={accountItem.amount} placement="top" sx={{ maxWidth: "none" }}>
-              <Typography variant="body2">
-                Amount: {accountItem.amount}
-              </Typography>
+              <Tooltip
+                key={index}
+                title={accountItem.amount}
+                placement="top"
+                sx={{ maxWidth: "none" }}
+              >
+                <Typography variant="body2">
+                  Amount: {accountItem.amount}
+                </Typography>
               </Tooltip>
               <IconButton
                 color="error"

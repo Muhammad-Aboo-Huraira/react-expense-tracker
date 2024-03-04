@@ -85,7 +85,7 @@ const AllTransactions = () => {
         setIsSubmitting(false);
         setTimeout(() => {
           navigate('/alltransactions');
-        }, 3000);
+        }, 2000);
         
       } else {
 
@@ -127,7 +127,7 @@ const AllTransactions = () => {
       setIsSubmitting(false);
       setTimeout(() => {
         navigate('/alltransactions');
-      }, 3000);
+      }, 2000);
     }
   };
 

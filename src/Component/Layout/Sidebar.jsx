@@ -34,6 +34,8 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
       duration: theme.transitions.duration.leavingScreen,
     }),
     marginLeft: `-${drawerWidth}px`,
+    backgroundColor: theme.palette.background.default,
+    color: theme.palette.text.primary, 
     ...(open && {
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.easeOut,
@@ -154,7 +156,6 @@ export default function Sidebar({ logout, data }) {
         </List>
       </Drawer>
       <Main open={open}>
-        <DrawerHeader />
         {data}
       </Main>
     </Box>
