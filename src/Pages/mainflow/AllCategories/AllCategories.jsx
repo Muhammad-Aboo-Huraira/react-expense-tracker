@@ -122,7 +122,7 @@ const AllCategories = () => {
   return (
     <Container
       maxWidth="md"
-      sx={{ maxWidth: "800px !important", minWidth: "800px !important" }}
+      sx={{ maxWidth: "800px !important", minWidth: "800px !important", marginTop: "20px" }}
     >
       <Typography variant="h4" gutterBottom>
         Add New Category
