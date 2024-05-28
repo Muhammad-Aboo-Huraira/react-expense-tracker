@@ -20,12 +20,12 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 export const firebaseConfig = {
-  apiKey: "AIzaSyAtxM1ypvAHtrsb_SCJelplU-NLHdphBbM",
-  authDomain: "react-expense-tracker-b5232.firebaseapp.com",
-  projectId: "react-expense-tracker-b5232",
-  storageBucket: "react-expense-tracker-b5232.appspot.com",
-  messagingSenderId: "1055388220601",
-  appId: "1:1055388220601:web:b16eb0061b271681d06f68",
+  apiKey: "AIzaSyBReWmPFOS8dTIHvT6-C77Yf4kKMQ5oVWc",
+  authDomain: "react-expense-tracker-4f960.firebaseapp.com",
+  projectId: "react-expense-tracker-4f960",
+  storageBucket: "react-expense-tracker-4f960.appspot.com",
+  messagingSenderId: "211265716138",
+  appId: "1:211265716138:web:b3dde8d376e521afcc35d3"
 };
 
 export const app = initializeApp(firebaseConfig);
