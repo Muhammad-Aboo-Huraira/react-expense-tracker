@@ -94,7 +94,7 @@ const Dashboard = () => {
     >
       {/* Greeting Paper */}
       <Paper elevation={3} className={classes.paper}>
-        <Typography variant="h5" gutterBottom>
+        <Typography variant="h5" sx={{fontWeight: "bold"}} gutterBottom>
           Welcome, {username}!
         </Typography>
         <Typography variant="body1">
@@ -159,7 +159,7 @@ const Dashboard = () => {
         sx={{ height: "200px", textAlign: "center" }}
       >
         <Paper elevation={3} className={classes.paper}>
-          <Typography variant="h6" gutterBottom>
+          <Typography variant="h5" gutterBottom>
             Transactions Chart
           </Typography>
           <span
@@ -182,16 +182,9 @@ const Dashboard = () => {
           >
             Expense
           </span>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              height: "200px",
-              width: "300px",
-            }}
-          >
+          <div className="donut-container">
             {transactionsData.length === 0 ? (
-              <Typography>Perform transactions to see donut chart</Typography>
+              <Typography variant="h5">Perform transactions to see donut chart</Typography>
             ) : (
               <PieChart
                 series={[
@@ -204,14 +197,14 @@ const Dashboard = () => {
                     outerRadius: 100,
                     paddingAngle: 5,
                     cornerRadius: 5,
-                    cx: "80%",
+                    cx: "58%",
                     cy: "50%",
                   },
                 ]}
                 colors={["green", "red"]}
               />
             )}
-          </Box>
+            </div>
         </Paper>
       </Grid>
     </Container>

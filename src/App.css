@@ -40,3 +40,11 @@
 .read-the-docs {
   color: #888;
 }
+
+.donut-container{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 40vh;
+}

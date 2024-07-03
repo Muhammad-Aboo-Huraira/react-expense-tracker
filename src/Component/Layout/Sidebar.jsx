@@ -111,7 +111,7 @@ export default function Sidebar({ logout, data }) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
+          <Typography variant="h6" noWrap component="div" sx={{fontWeight: "bold"}}>
             Expense Tracker
           </Typography>
         </Toolbar>
